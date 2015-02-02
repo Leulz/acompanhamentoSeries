@@ -1,0 +1,125 @@
+@(series: List[Serie])
+
+<!DOCTYPE html>
+
+<html>
+<head lang="pt">
+	<meta charset="utf-8">
+    <title>Onde eu parei?</title>
+    <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap.min.css")">
+    <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+    <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js")"></script>        
+    <script src="@routes.Assets.at("javascripts/bootstrap.min.js")"></script>        
+    <script src="@routes.Assets.at("javascripts/bootstrap.js")"></script>        
+    <script src="@routes.Assets.at("javascripts/hello.js")"></script>        
+</head>
+<body>
+	<div class="container col-md-12">
+		<div class="page-header">
+  			<h1>Onde eu parei?<small>Acompanhe suas séries favoritas e nunca mais esqueça em qual espiódio parou!</small></h1>
+		</div>
+		<div class="col-md-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h4 class="panel-title">Todas as séries</h4>
+			</div>
+			<div class="panel-body">
+				<ul class="list-group">
+				@for(serie <- series){
+					@if(!serie.isAcompanhada()){
+					<li class="list-group-item">
+						<form class="badge" action="@routes.Application.acompanhaSerie(serie.getId())" method="post">
+							<button type="submit" class="close">&#43;</button>
+						</form>
+						<span class="badge">@serie.getQtdTemporadas() temporadas</span>
+						<h5 data-toggle="collapse" data-target="#temporadas@serie.getId()">@serie.getNome()</h5>
+					</li>
+					<div class="collapse" id="temporadas@serie.getId()">
+					@for(temporada <- serie.getTemporadas()){
+						<li class="list-group-item" data-toggle="collapse" data-target="#episodios@temporada.getId()">
+							<span class="badge">@temporada.getQtdEpisodios() eps</span>
+							<strong>Temporada @temporada.getNumero()</strong></li>
+						<div class="collapse" id="episodios@temporada.getId()">
+						@for(ep <- temporada.getEpisodios()){
+							<li class="list-group-item">@ep.getNumero() - @ep.getNome()</li>
+						}
+						</div>
+					}
+					</div>
+					}
+				}
+				</ul>
+			</div>
+		</div>
+		</div>
+		
+		<div class="col-md-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h4 class="panel-title">Séries que eu acompanho</h4>
+			</div>
+			<div class="panel-body">
+				<ul class="list-group">
+				@for(serie <- series){
+					@if(serie.isAcompanhada()){
+					<li class="list-group-item">
+						<form class="badge" action="@routes.Application.desacompanhaSerie(serie.getId())" method="post">
+							<button type="submit" class="close">&#8722;</button>
+						</form>
+						<h5 data-toggle="collapse" data-target="#temporadas@serie.getId()">@serie.getNome()</h5>
+					</li>
+					<div class="collapse" id="temporadas@serie.getId()">
+					@for(temporada <- serie.getTemporadas()){
+						@if(temporada.getStatus == -1){
+							<li class="list-group-item yellow-bg" data-toggle="collapse" data-target="#episodios@temporada.getId()">
+								<strong>Temporada @temporada.getNumero()</strong></li>
+							<div class="collapse" id="episodios@temporada.getId()">
+						}
+						@if(temporada.getStatus == 0){
+							<li class="list-group-item blue-bg" data-toggle="collapse" data-target="#episodios@temporada.getId()">
+								<strong>Temporada @temporada.getNumero()</strong></li>
+							<div class="collapse" id="episodios@temporada.getId()">
+						}
+						@if(temporada.getStatus == 1){
+							<li class="list-group-item green-bg" data-toggle="collapse" data-target="#episodios@temporada.getId()">
+								<strong>Temporada @temporada.getNumero()</strong></li>
+							<div class="collapse" id="episodios@temporada.getId()">
+						}
+						@for(ep <- temporada.getEpisodios()){
+							@if(ep.isAssistido){
+								<li class="list-group-item lightgreen-bg">@ep.getNumero() - @ep.getNome()
+									<form class="badge" action="@routes.Application.cancelaEpisodio(ep.getId())" method="post">
+										<button type="submit" class="close">&times;</button>
+									</form>
+								</li>
+							}else{
+								<li class="list-group-item">@ep.getNumero() - @ep.getNome()
+								<form class="badge" action="@routes.Application.assisteEpisodio(ep.getId())" method="post">
+										<button type="submit" class="close">&#10003;</button>
+									</form>
+								</li>										
+							}
+						}
+						<li class="list-group-item"><strong>Próximo:</strong> @temporada.getProximoEpisodio()</li>
+						</div>
+					}
+					</div>
+					}
+				}
+				</ul>
+			</div>
+		</div>
+			<ul class="list-group">
+				<li class="list-group-item"><strong>Legenda</strong></li>
+				<li class="list-group-item blue-bg"> Pelo menos um episódio assistido.</li>
+				<li class="list-group-item green-bg"> Último episódio assistido.</li>
+				<li class="list-group-item yellow-bg"> Nenhum episódio assistido.</li>
+			</ul>
+		</div>
+	
+	</div>
+
+
+</body>
+</html>
