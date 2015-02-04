@@ -48,7 +48,7 @@ public class Global extends GlobalSettings {
 	}
 	
 	private void readCSV() throws IOException{
-		File csv = new File("conf/seriesFinalFile.csv");
+		File csv = new File("seriesFinalFile.csv");
 		BufferedReader br = new BufferedReader(new FileReader(csv)); 
 		String line = br.readLine();
 		String[] linha = line.split(",");
