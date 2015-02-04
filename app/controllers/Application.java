@@ -18,6 +18,11 @@ public class Application extends Controller {
 	
 	@Transactional
 	public static Result index() {
+		String port = System.getenv("PORT");
+		if (port==null || port.isEmpty()){
+			port = "8080";
+		}
+		System.setProperty("server.port", port);
     	getSeriesFromDB();
         return ok(index.render(series));
     }
