@@ -6,7 +6,7 @@ import java.util.List;
 import javax.persistence.*;
 
 @Entity
-public class Temporada {
+public class Temporada implements Comparable<Temporada>{
 	@Transient
 	private int completa = 1;
 	@Transient
@@ -139,5 +139,15 @@ public class Temporada {
 		}
 		
 		return status;
+	}
+
+	@Override
+	public int compareTo(Temporada outraTemporada) {
+		if (this.getNumero()>outraTemporada.getNumero()){
+			return 1;
+		} else if (this.getNumero()<outraTemporada.getNumero()){
+			return -1;
+		}
+		return 0;
 	}	
 }

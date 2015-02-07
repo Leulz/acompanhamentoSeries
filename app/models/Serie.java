@@ -1,6 +1,7 @@
 package models;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.*;
@@ -63,6 +64,7 @@ public class Serie {
 	}
 
 	public List<Temporada> getTemporadas() {
+		Collections.sort(temporadas);
 		return temporadas;
 	}
 
