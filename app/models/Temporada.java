@@ -67,6 +67,7 @@ public class Temporada implements Comparable<Temporada>{
 	}
 
 	public List<Episodio> getEpisodios() {
+		Collections.sort(episodios);
 		return episodios;
 	}
 
@@ -90,8 +91,7 @@ public class Temporada implements Comparable<Temporada>{
 		this.serie = serie;
 	}
 	
-	public Episodio getEpisodio(int num){
-		Collections.sort(episodios);
+	public Episodio getEpisodio(int num){		
 		return episodios.get(num-1);
 	}
 
