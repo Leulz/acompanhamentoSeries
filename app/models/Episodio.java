@@ -2,6 +2,8 @@ package models;
 
 import javax.persistence.*;
 
+import play.Logger;
+
 @Entity
 public class Episodio implements Comparable<Episodio>{
 	@Id
@@ -57,8 +59,14 @@ public class Episodio implements Comparable<Episodio>{
 		return assistido;
 	}
 
-	public void setAssistido(boolean assistido) {
+	public void setAssistido(boolean assistido) {		
+		if (assistido) {
+			temporada.addOrdenacaoEpisodios(this.getNumero());
+		} else{
+			temporada.removeOrdenacaoEpisodios(this.getNumero());
+		}
 		this.assistido = assistido;
+		Logger.debug(temporada.getOrdenacaoEpisodios()+"");
 		this.temporada.verificaStatus();
 	}
 

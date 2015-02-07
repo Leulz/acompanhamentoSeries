@@ -32,13 +32,22 @@ public class Temporada implements Comparable<Temporada>{
 	@OneToMany(cascade=CascadeType.ALL)
 	@JoinColumn(name="TEMP_EPS")
 	private List<Episodio> episodios;
+	
+	@ElementCollection
+	List<Integer> ordenacaoEpisodios;
+	
+	@Transient
+	SelecionadorProximoEpisodio selecionadorProximoEpisodio;
 
 	public Temporada() {
 		status = -1;
 		episodios = new ArrayList<>();
 		qtdEpisodios = episodios.size();
-	}
-	
+		this.setSelecionadorProximoEpisodio(new SelecionadorCronologico());
+		selecionadorProximoEpisodio.desativarSelecao(3);
+		ordenacaoEpisodios = new ArrayList<Integer>();
+	}	
+
 	public Temporada(int num, Serie serie){
 		this();
 		this.numero = num;
@@ -54,6 +63,7 @@ public class Temporada implements Comparable<Temporada>{
 		return id;
 	}
 
+	@SuppressWarnings("unused")
 	private void setId(Long id) {
 		this.id = id;
 	}
@@ -104,21 +114,22 @@ public class Temporada implements Comparable<Temporada>{
 	}
 	
 	public String getProximoEpisodio(){
-		String result = episodios.get(0).getNumero() + " - " + episodios.get(0).getNome();
+		return selecionadorProximoEpisodio.getProximoEpisodioASerAssistido(this);
+	}
+	
+	public List<Integer> getOrdenacaoEpisodios() {
+		return ordenacaoEpisodios;
+	}
+	
+	public int getQtdAssistidos() {
+		int contadorEpisodios = 0;
 		
-		for (int i = qtdEpisodios-1; i >= 0; i--) {
-			if(episodios.get(i).isAssistido()){
-				if(i < qtdEpisodios-2){
-					result = episodios.get(i+1).getNumero() + " - " + episodios.get(i+1).getNome();
-				}
+		for (Episodio episodio : episodios) {
+			if (episodio.isAssistido()) {
+				contadorEpisodios = contadorEpisodios + 1;
 			}
 		}
-		
-		if(episodios.get(qtdEpisodios-1).isAssistido()){
-			result = "Você já assistiu ao último episódio desta temporada.";
-		}
-		
-		return result;
+		return contadorEpisodios;
 	}
 	
 	public int verificaStatus(){
@@ -141,6 +152,24 @@ public class Temporada implements Comparable<Temporada>{
 		}
 		
 		return status;
+	}
+	
+	public SelecionadorProximoEpisodio getSelecionadorProximoEpisodio() {
+		return selecionadorProximoEpisodio;
+	}
+
+	public void setSelecionadorProximoEpisodio(
+			SelecionadorProximoEpisodio selecionadorProximoEpisodio) {
+		this.selecionadorProximoEpisodio = selecionadorProximoEpisodio;
+	}
+	
+	public void addOrdenacaoEpisodios(Integer numeroEpisodio) {
+		this.ordenacaoEpisodios.add(numeroEpisodio);
+	}
+	
+	public void removeOrdenacaoEpisodios(Integer numeroEpisodio) {
+		int indiceEpisodio = this.ordenacaoEpisodios.indexOf(numeroEpisodio);
+		this.ordenacaoEpisodios.remove(indiceEpisodio);		
 	}
 
 	@Override
