@@ -1,6 +1,5 @@
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,7 +18,12 @@ import play.db.jpa.JPA;
 public class Global extends GlobalSettings {
 
 	private static GenericDAO dao = new GenericDAO();
-	List<Serie> series = new ArrayList<>();
+	private static final int posicaoNomeSerie = 0;
+	private static final int posicaoNumeroTemporada = 1;
+	private static final int posicaoNumeroEpisodio = 2;
+	private static final int posicaoNomeEpisodio = 3;	
+	
+	private List<Serie> series = new ArrayList<>();
 	
 	@Override
 	public void onStart(Application app) {
@@ -57,14 +61,14 @@ public class Global extends GlobalSettings {
 		int temporadaLinha;
 		String episodioLinha;
 		
-		String serieAtualNome = linha[0];
-		int temporadaAtualNum = 1;
-		int epLinhaNum = Integer.parseInt(linha[2]);
-		String episodioAtual = linha[3];
+		String serieAtualNome = linha[posicaoNomeSerie];
+		int temporadaAtualNum = posicaoNumeroTemporada;
+		int epLinhaNum = Integer.parseInt(linha[posicaoNumeroEpisodio]);
+		String episodioAtual = linha[posicaoNomeEpisodio];
 		
 		Serie serieAtual = new Serie(serieAtualNome);
 
-		Temporada temporadaAtual = new Temporada(1, serieAtual);
+		Temporada temporadaAtual = new Temporada(posicaoNumeroTemporada, serieAtual);
 		Episodio epAtual = new Episodio(episodioAtual, temporadaAtual, epLinhaNum);
 		temporadaAtual.addEpisodio(epAtual);
 		serieAtual.addTemporada(temporadaAtual);
@@ -72,11 +76,11 @@ public class Global extends GlobalSettings {
 		while((line = br.readLine()) != null){
 			linha = line.split(",");
 			
-			if(linha.length > 3){
-				serieLinha = linha[0];
-				temporadaLinha = Integer.parseInt(linha[1]);
-				epLinhaNum = Integer.parseInt(linha[2]);
-				episodioLinha = linha[3];
+			if(linha.length > posicaoNomeEpisodio){
+				serieLinha = linha[posicaoNomeSerie];
+				temporadaLinha = Integer.parseInt(linha[posicaoNumeroTemporada]);
+				epLinhaNum = Integer.parseInt(linha[posicaoNumeroEpisodio]);
+				episodioLinha = linha[posicaoNomeEpisodio];
 		
 				if(serieLinha.equals(serieAtualNome)){
 					if(temporadaLinha == temporadaAtualNum){
@@ -96,7 +100,7 @@ public class Global extends GlobalSettings {
 					dao.persist(serieAtual);
 					
 					serieAtualNome = serieLinha;
-					temporadaAtualNum = 1;
+					temporadaAtualNum = posicaoNumeroTemporada;
 					episodioAtual = episodioLinha;
 					serieAtual = new Serie(serieAtualNome);
 					temporadaAtual = new Temporada(1, serieAtual);
