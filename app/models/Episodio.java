@@ -3,7 +3,7 @@ package models;
 import javax.persistence.*;
 
 @Entity
-public class Episodio {
+public class Episodio implements Comparable<Episodio>{
 	@Id
 	@GeneratedValue
 	private Long id;
@@ -68,6 +68,16 @@ public class Episodio {
 
 	public void setTemporada(Temporada temporada) {
 		this.temporada = temporada;
+	}
+
+	@Override
+	public int compareTo(Episodio outroEpisodio) {
+		if (this.getNumero()>outroEpisodio.getNumero()) {
+			return 1;
+		} else if (this.getNumero()<outroEpisodio.getNumero()) {
+			return -1;
+		}
+		return 0;
 	}
 	
 	

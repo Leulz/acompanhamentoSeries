@@ -1,6 +1,7 @@
 package models;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.*;
@@ -90,6 +91,7 @@ public class Temporada implements Comparable<Temporada>{
 	}
 	
 	public Episodio getEpisodio(int num){
+		Collections.sort(episodios);
 		return episodios.get(num-1);
 	}
 
