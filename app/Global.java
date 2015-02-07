@@ -21,7 +21,7 @@ public class Global extends GlobalSettings {
 	private static final int SERIE = 0;
 	private static final int TEMPORADA = 1;
 	private static final int EPISODIONUM = 2;
-	private static final int EPISODIONOME = 3;	
+	private static final int EPISODIONOME = 3;
 	
 	private List<Serie> series = new ArrayList<>();
 	
@@ -32,7 +32,14 @@ public class Global extends GlobalSettings {
 		JPA.withTransaction(new play.libs.F.Callback0() {
 			@Override
 			public void invoke() throws Throwable {
-				readCSV();
+				try {
+					series = dao.findAllByClassName("Serie");
+					if (series.size() == 0){
+						readCSV();
+					}
+				} catch (Exception ex) {
+					Logger.debug(ex.getMessage());
+				}				
 			}
 		});
 	}
@@ -43,11 +50,15 @@ public class Global extends GlobalSettings {
 	    @Override
 	    public void invoke() throws Throwable {
 	        Logger.info("Aplicação finalizando...");
-	        series = dao.findAllByClassName("Serie");
-
-	        for (Serie serie: series) {
-	        dao.removeById(Serie.class, serie.getId());
-	       } 
+	        try {
+		        series = dao.findAllByClassName("Serie");
+	
+		        for (Serie serie: series) {
+		        dao.removeById(Serie.class, serie.getId());
+	        }
+	       } catch (Exception ex) {
+	    	   Logger.debug("Problema na finalização: "+ex.getMessage());
+	       }
 	    }}); 
 	}
 	
