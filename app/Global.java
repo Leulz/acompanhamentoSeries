@@ -18,10 +18,10 @@ import play.db.jpa.JPA;
 public class Global extends GlobalSettings {
 
 	private static GenericDAO dao = new GenericDAO();
-	private static final int posicaoNomeSerie = 0;
-	private static final int posicaoNumeroTemporada = 1;
-	private static final int posicaoNumeroEpisodio = 2;
-	private static final int posicaoNomeEpisodio = 3;	
+	private static final int SERIE = 0;
+	private static final int TEMPORADA = 1;
+	private static final int EPISODIONUM = 2;
+	private static final int EPISODIONOME = 3;	
 	
 	private List<Serie> series = new ArrayList<>();
 	
@@ -61,14 +61,14 @@ public class Global extends GlobalSettings {
 		int temporadaLinha;
 		String episodioLinha;
 		
-		String serieAtualNome = linha[posicaoNomeSerie];
-		int temporadaAtualNum = posicaoNumeroTemporada;
-		int epLinhaNum = Integer.parseInt(linha[posicaoNumeroEpisodio]);
-		String episodioAtual = linha[posicaoNomeEpisodio];
+		String serieAtualNome = linha[SERIE];
+		int temporadaAtualNum = TEMPORADA;
+		int epLinhaNum = Integer.parseInt(linha[EPISODIONUM]);
+		String episodioAtual = linha[EPISODIONOME];
 		
 		Serie serieAtual = new Serie(serieAtualNome);
 
-		Temporada temporadaAtual = new Temporada(posicaoNumeroTemporada, serieAtual);
+		Temporada temporadaAtual = new Temporada(TEMPORADA, serieAtual);
 		Episodio epAtual = new Episodio(episodioAtual, temporadaAtual, epLinhaNum);
 		temporadaAtual.addEpisodio(epAtual);
 		serieAtual.addTemporada(temporadaAtual);
@@ -76,11 +76,11 @@ public class Global extends GlobalSettings {
 		while((line = br.readLine()) != null){
 			linha = line.split(",");
 			
-			if(linha.length > posicaoNomeEpisodio){
-				serieLinha = linha[posicaoNomeSerie];
-				temporadaLinha = Integer.parseInt(linha[posicaoNumeroTemporada]);
-				epLinhaNum = Integer.parseInt(linha[posicaoNumeroEpisodio]);
-				episodioLinha = linha[posicaoNomeEpisodio];
+			if(linha.length > EPISODIONOME){
+				serieLinha = linha[SERIE];
+				temporadaLinha = Integer.parseInt(linha[TEMPORADA]);
+				epLinhaNum = Integer.parseInt(linha[EPISODIONUM]);
+				episodioLinha = linha[EPISODIONOME];
 		
 				if(serieLinha.equals(serieAtualNome)){
 					if(temporadaLinha == temporadaAtualNum){
@@ -100,7 +100,7 @@ public class Global extends GlobalSettings {
 					dao.persist(serieAtual);
 					
 					serieAtualNome = serieLinha;
-					temporadaAtualNum = posicaoNumeroTemporada;
+					temporadaAtualNum = TEMPORADA;
 					episodioAtual = episodioLinha;
 					serieAtual = new Serie(serieAtualNome);
 					temporadaAtual = new Temporada(1, serieAtual);
