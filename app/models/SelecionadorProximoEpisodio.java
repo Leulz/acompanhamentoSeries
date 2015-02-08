@@ -1,8 +1,27 @@
 package models;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+
+@Entity
+@DiscriminatorColumn(name="REF_TYPE")
 public abstract class SelecionadorProximoEpisodio {	
+	
+	@Id
+	@GeneratedValue
+	private Long id;
+	
+	@Column
 	int numeroLimiteEpisodios = 0;
 	
+	@OneToOne(fetch=FetchType.LAZY, mappedBy="selecionadorProximoEpisodio", cascade=CascadeType.ALL)
+	Temporada temporada;
 	/**
 	 * Retorna o nome do próximo episódio a ser assistido.
 	 * 
@@ -30,4 +49,8 @@ public abstract class SelecionadorProximoEpisodio {
 	 * @return
 	 */
 	public abstract boolean definirSeHaRecomendacaoDeProximoEpisodio(Episodio episodio);
+	
+	public int getNumeroLimiteEpisodios() {
+		return numeroLimiteEpisodios;
+	}
 }

@@ -2,6 +2,8 @@ package models;
 
 import java.util.List;
 
+import javax.persistence.Entity;
+
 /**
  * Seleciona o próximo episódio a ser assistido de uma temporada. Tal episódio
  * será o primeiro episódio não assistido, na ordem cronológica.
@@ -9,7 +11,12 @@ import java.util.List;
  * @author Léo Vital
  *
  */
+@Entity
 public class SelecionadorCronologico extends SelecionadorProximoEpisodio {
+	
+	public SelecionadorCronologico() {
+		// TODO Auto-generated constructor stub
+	}
 	@Override
 	public String getProximoEpisodioASerAssistido(Temporada temporada) {
 		List<Episodio> episodios = temporada.getEpisodios();

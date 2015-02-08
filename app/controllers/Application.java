@@ -3,13 +3,18 @@ package controllers;
 import java.util.List;
 
 import models.Episodio;
+import models.SelecionadorCronologico;
+import models.SelecionadorProximoEpisodio;
 import models.Serie;
+import models.Temporada;
 import models.dao.GenericDAO;
 import play.Logger;
+import play.data.Form;
 import play.db.jpa.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.index;
+import views.html.helper.form;
 
 public class Application extends Controller {
 	private static List<Serie> series;
@@ -63,8 +68,45 @@ public class Application extends Controller {
 	}
 	
 	@Transactional
+	public static Result setaSelecaoProximo() throws InstantiationException, IllegalAccessException {
+		Form<Temporada> metaForm = Form.form(Temporada.class);
+		Form<Temporada> filledForm = metaForm.bindFromRequest();
+		String arg = filledForm.data().get("arg");
+		Long id = Long.parseLong(filledForm.data().get("id"));
+		Integer desativarRecomendacao = null;
+		if (filledForm.data().get("desativarRecomendacao") != null) {
+			desativarRecomendacao = Integer.parseInt(filledForm.data().get("desativarRecomendacao"));
+		}		
+		try {
+			Temporada temp = getDAO().findByEntityId(Temporada.class, id);
+			if (arg != null) {
+				Class selecionador = Class.forName(arg);			
+				temp.setSelecionadorProximoEpisodio((SelecionadorProximoEpisodio) selecionador.newInstance());
+			}
+			if (desativarRecomendacao != null) {
+				if (temp.getSelecionadorProximoEpisodio().getNumeroLimiteEpisodios() == 0) {
+					temp.getSelecionadorProximoEpisodio().desativarSelecao(desativarRecomendacao);
+				} else {
+					temp.getSelecionadorProximoEpisodio().desativarSelecao(0);
+				}
+			}
+			getDAO().merge(temp);
+			getDAO().flush();
+			Temporada tempDepois = getDAO().findByEntityId(Temporada.class, id);
+			Logger.debug(tempDepois.getSelecionadorProximoEpisodio().getClass().getName()+"");
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return redirect("/");
+	}
+	
+	@Transactional
 	public static Result assisteEpisodio(Long id){
 		Episodio ep = getDAO().findByEntityId(Episodio.class, id);
+		Temporada temp = ep.getTemporada();
+		Logger.debug("Id temp epi: "+temp.getId());
 		ep.setAssistido(true);
 		getDAO().merge(ep);
 		getDAO().flush();

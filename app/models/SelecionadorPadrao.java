@@ -2,6 +2,10 @@ package models;
 
 import java.util.List;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
 /**
  * Seleciona o próximo episódio a ser assistido de uma temporada. Tal episódio
  * será o episódio imediatamente seguinte ao último episódio assistido.
@@ -9,7 +13,8 @@ import java.util.List;
  * @author Léo Vital
  *
  */
-public class SelecionadorPadrao extends SelecionadorProximoEpisodio {
+@Entity
+public class SelecionadorPadrao extends SelecionadorProximoEpisodio {	
 
 	@Override
 	public String getProximoEpisodioASerAssistido(Temporada temporada) {

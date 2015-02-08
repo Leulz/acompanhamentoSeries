@@ -36,15 +36,15 @@ public class Temporada implements Comparable<Temporada>{
 	@ElementCollection
 	List<Integer> ordenacaoEpisodios;
 	
-	@Transient
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@JoinColumn(name="selecao_id")
 	SelecionadorProximoEpisodio selecionadorProximoEpisodio;
 
 	public Temporada() {
 		status = -1;
 		episodios = new ArrayList<>();
 		qtdEpisodios = episodios.size();
-		this.setSelecionadorProximoEpisodio(new SelecionadorCronologico());
-		selecionadorProximoEpisodio.desativarSelecao(3);
+		this.setSelecionadorProximoEpisodio(new SelecionadorPadrao());
 		ordenacaoEpisodios = new ArrayList<Integer>();
 	}	
 

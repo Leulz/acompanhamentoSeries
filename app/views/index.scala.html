@@ -71,6 +71,16 @@
 					</li>
 					<div class="collapse" id="temporadas@serie.getId()">
 					@for(temporada <- serie.getTemporadas()){
+						<div>
+						<form class="badge" action="@routes.Application.setaSelecaoProximo()" method="post">
+										<input type="radio" name="arg" value="models.SelecionadorPadrao">Recomendação padrão
+										<input type="radio" name="arg" value="models.SelecionadorCronologico">Recomendação cronológica
+										<input type="checkbox" name="desativarRecomendacao" value="3">Ativar/Desativar recomendação de próximo<br> episódio 
+										após se assistir a 3 episódios fora de ordem.
+										<input type="hidden" name="id" value="@temporada.getId()">										
+										<button type="submit" class="close">&#10003;</button>
+									</form>
+						</div>
 						@if(temporada.getStatus == -1){
 							<li class="list-group-item yellow-bg" data-toggle="collapse" data-target="#episodios@temporada.getId()">
 								<strong>Temporada @temporada.getNumero()</strong></li>
