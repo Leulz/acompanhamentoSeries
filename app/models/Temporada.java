@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import play.Logger;
+
 @Entity
 public class Temporada implements Comparable<Temporada>{
 	@Transient
@@ -29,7 +31,7 @@ public class Temporada implements Comparable<Temporada>{
 	@ManyToOne(cascade=CascadeType.ALL)
 	private Serie serie;
 	
-	@OneToMany(cascade=CascadeType.ALL)
+	@OneToMany(cascade=CascadeType.PERSIST)
 	@JoinColumn(name="TEMP_EPS")
 	private List<Episodio> episodios;
 	

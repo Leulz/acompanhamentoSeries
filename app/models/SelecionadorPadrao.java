@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import play.Logger;
+
 /**
  * Seleciona o próximo episódio a ser assistido de uma temporada. Tal episódio
  * será o episódio imediatamente seguinte ao último episódio assistido.
@@ -54,6 +56,7 @@ public class SelecionadorPadrao extends SelecionadorProximoEpisodio {
 	public boolean definirSeHaRecomendacaoDeProximoEpisodio(Episodio episodio) {
 		boolean result = true;
 		Temporada temporada = episodio.getTemporada();
+		Logger.debug("Ord antes: "+temporada.getOrdenacaoEpisodios());
 
 		int numeroUltimoAssistido = episodio.getNumero();
 		List<Integer> ordenacao = temporada.getOrdenacaoEpisodios();
@@ -68,6 +71,7 @@ public class SelecionadorPadrao extends SelecionadorProximoEpisodio {
 				break;
 			}
 		}
+		Logger.debug("Ord antes: "+temporada.getOrdenacaoEpisodios());
 		return result;
 	}
 }

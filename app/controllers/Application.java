@@ -3,7 +3,6 @@ package controllers;
 import java.util.List;
 
 import models.Episodio;
-import models.SelecionadorCronologico;
 import models.SelecionadorProximoEpisodio;
 import models.Serie;
 import models.Temporada;
@@ -14,7 +13,6 @@ import play.db.jpa.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.index;
-import views.html.helper.form;
 
 public class Application extends Controller {
 	private static List<Serie> series;
@@ -59,7 +57,11 @@ public class Application extends Controller {
 	public static Result cancelaEpisodio(Long id){
 		Episodio ep = getDAO().findByEntityId(Episodio.class, id);
 		ep.setAssistido(false);
+		Temporada temp = ep.getTemporada();
+		int epiNum = ep.getNumero();
+		temp.removeOrdenacaoEpisodios(epiNum);
 		getDAO().merge(ep);
+		getDAO().merge(temp);
 		getDAO().flush();
 		
 		Logger.info("Cancelou ep " + ep.getNome());
@@ -92,8 +94,6 @@ public class Application extends Controller {
 			}
 			getDAO().merge(temp);
 			getDAO().flush();
-			Temporada tempDepois = getDAO().findByEntityId(Temporada.class, id);
-			Logger.debug(tempDepois.getSelecionadorProximoEpisodio().getClass().getName()+"");
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -106,9 +106,12 @@ public class Application extends Controller {
 	public static Result assisteEpisodio(Long id){
 		Episodio ep = getDAO().findByEntityId(Episodio.class, id);
 		Temporada temp = ep.getTemporada();
-		Logger.debug("Id temp epi: "+temp.getId());
+		int epiNum = ep.getNumero();
+		temp.addOrdenacaoEpisodios(epiNum);
+		Logger.debug(""+temp.getOrdenacaoEpisodios());
 		ep.setAssistido(true);
 		getDAO().merge(ep);
+		getDAO().merge(temp);
 		getDAO().flush();
 		
 		Logger.info("Assistiu ep " + ep.getNome());

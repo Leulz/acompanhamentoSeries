@@ -59,14 +59,8 @@ public class Episodio implements Comparable<Episodio>{
 		return assistido;
 	}
 
-	public void setAssistido(boolean assistido) {		
-		if (assistido) {
-			temporada.addOrdenacaoEpisodios(this.getNumero());
-		} else{
-			temporada.removeOrdenacaoEpisodios(this.getNumero());
-		}
+	public void setAssistido(boolean assistido) {
 		this.assistido = assistido;
-		Logger.debug(temporada.getOrdenacaoEpisodios()+"");
 		this.temporada.verificaStatus();
 	}
 
