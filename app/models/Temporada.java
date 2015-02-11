@@ -137,7 +137,7 @@ public class Temporada implements Comparable<Temporada>{
 	public int verificaStatus(){
 		int cont = 0;
 		
-		for (Episodio ep : episodios) {
+		for (Episodio ep : this.getEpisodios()) {
 			if(ep.isAssistido()){
 				cont += 1;
 			}
