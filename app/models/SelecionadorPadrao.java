@@ -53,10 +53,8 @@ public class SelecionadorPadrao extends SelecionadorProximoEpisodio {
 	}
 
 	@Override
-	public boolean definirSeHaRecomendacaoDeProximoEpisodio(Episodio episodio) {
-		boolean result = true;
+	public boolean definirSeHaRecomendacaoDeProximoEpisodio(Episodio episodio) {		
 		Temporada temporada = episodio.getTemporada();
-		Logger.debug("Ord antes: "+temporada.getOrdenacaoEpisodios());
 
 		int numeroUltimoAssistido = episodio.getNumero();
 		List<Integer> ordenacao = temporada.getOrdenacaoEpisodios();
@@ -67,11 +65,9 @@ public class SelecionadorPadrao extends SelecionadorProximoEpisodio {
 				contadorEpisodios = contadorEpisodios + 1;
 			}
 			if (contadorEpisodios == numeroLimiteEpisodios) {
-				result = false;
-				break;
+				return false;
 			}
 		}
-		Logger.debug("Ord antes: "+temporada.getOrdenacaoEpisodios());
-		return result;
+		return true;
 	}
 }
